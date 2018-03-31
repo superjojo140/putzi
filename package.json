@@ -1,0 +1,25 @@
+{
+  "name": "putzi",
+  "version": "1.0.0",
+  "description": "A DIY cleaning robot",
+  "main": "start.js",
+  "dependencies": {
+    "pigpio": "^0.6.4",
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/superjojo140/putzi.git"
+  },
+  "author": "superjojo140",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/superjojo140/putzi/issues"
+  },
+  "homepage": "https://github.com/superjojo140/putzi#readme"
+}
