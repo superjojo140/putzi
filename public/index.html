@@ -2,38 +2,49 @@
 <html lang="de">
 
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Oleo+Script|Roboto" rel="stylesheet">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socket.io Chat by superjojo140</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <style>
-        button {
-            padding: 50px;
-        }
-    </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Oleo+Script|Roboto" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Putzi Remote Monitor</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    button {
+      padding: 50px;
+      background-color: rgba(95, 144, 228, 0.73);
+      border-radius: 5px;
+      border: none;
+      color:white;
+    }
+    .big{
+      margin-left: 170px;
+    }
+  </style>
 </head>
 
 <body>
-    <h1>Fahren</h1>
-    <div>
-        <button id="forward">Fahren vor</button>
-        <button id="backward">Fahren zurück</button>
-    </div>
-    <br>
-    <br>
-    <br>
-    <br>
-    <h1>Lenken</h1>
-    <div>
-        <button id="left">Lenken links</button>
-        <button id="right">Lenken rechts</button>
-    </div>
+  <h1>Putzi Remote Control</h1>
+  <div>
+
+    <button id="forward" class="big">Fahren vor</button>
+  </div>
+  <br>
+  <div>
+    <button id="left">Lenken links</button>
     <button onclick="stop()">   NOT-AUS   </button>
-    <button onclick="toggleLight()">   Licht   </button>
+    <button id="right">Lenken rechts</button>
+  </div>
+  <br>
+  <div>
+
+    <button id="backward" class="big">Fahren zurück</button>
+    <button  onclick="toggleLight()">Bürste</button>
+  </div>
+  <br>
+  <br>
+  <br>
 </body>
 <script src="/auto.js"></script>
 

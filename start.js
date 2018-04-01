@@ -19,7 +19,7 @@ var motor2 = {};
 var lightPort;
 var buttonRightState = 0;
 var buttonLeftState = 0;
-var accelerationIntervall = 20;
+var accelerationIntervall = 5;
 var accelerationStep = 10;
 var adjustSpeedTimeout;
 /*
@@ -115,7 +115,7 @@ motor2.turn = function (direction, speed) {
 
 */
 //Right
-var buttonRight = new Gpio(20, {
+/*var buttonRight = new Gpio(20, {
     mode: Gpio.INPUT,
     pullUpDown: Gpio.PUD_UP,
     edge: Gpio.EITHER_EDGE
@@ -141,7 +141,7 @@ buttonLeft.on('interrupt', function (level) {
         motorTurn(motor2, BACKWARDS, 0);
         console.log("Lenkung blockiert nach Links - Lenkung gestoppt");
     }
-});
+});*/
 /*
 
   __  __       _                _____            _             _   ______                _   _
@@ -161,14 +161,14 @@ function motorTurn(motor, direction, speed) {
         return;
     }
     //Prüfe ob Lenkung blockiert
-    if (buttonRightState == 1 && direction == BACKWARDS && motor == motor2 && speed > 0) {
+    /*if (buttonRightState == 1 && direction == BACKWARDS && motor == motor2 && speed > 0) {
         console.log("Lenkung blockiert nach Rechts - Lenkung gestoppt");
         return;
     }
     if (buttonLeftState == 1 && direction == FORWARD && motor == motor2 && speed > 0) {
         console.log("Lenkung blockiert nach Links - Lenkung gestoppt");
         return;
-    }
+    }*/
     //Prüfe, ob motor gestopp oder gestartet wird
     if (speed > 0) {
         console.log("Turning Motor");
@@ -178,8 +178,8 @@ function motorTurn(motor, direction, speed) {
     //
     //Befehl an Motor
     //
-    adjustSpeed(motor, Number(direction), Number(speed));
-    // motor.turn(Number(direction), Number(speed));
+  //  adjustSpeed(motor, Number(direction), Number(speed));
+     motor.turn(Number(direction), Number(speed));
 }
 
 function adjustSpeed(motor, direction, speed) {
@@ -238,8 +238,8 @@ function lightSwitch(state) {
 
 
 */
-
-var screenContent = ["e-ink/pt_help.py", "**Auto 1.0**", "", "", "", "", "", "", ""]
+var ipAdresse = getIp();
+var screenContent = ["e-ink/screen_writer.py","   Putzi  ",ipAdresse,"Port:  3000","Akku: 10.5V","Clients:  1","Menu      -",0,1,0,0,0,0];
 
 function showScreenInfo() {
     //auf Bildschirm schreiben
@@ -296,10 +296,17 @@ io.sockets.on("connection", function (socket) {
             var myMotor;
             if (data.motor == 1) {
                 myMotor = motor1;
-            } else {
+                motorTurn(myMotor, data.direction, data.speed);
+            } else if (data.motor == 2) {
                 myMotor = motor2;
+                motorTurn(myMotor, data.direction, data.speed);
             }
-            motorTurn(myMotor, data.direction, data.speed);
+            else if (data.motor == "both"){
+              console.log("both");
+              motorTurn(motor1, data.direction, data.speed);
+              motorTurn(motor2, data.direction, data.speed);
+            }
+
         } else
         if (data.type == "light") {
             lightSwitch(data.state);

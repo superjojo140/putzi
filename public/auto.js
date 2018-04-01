@@ -9,39 +9,40 @@ var lightState = 0;
 var i = 0;
 
 function startDriving(){
-   
+
         drive(2,1,i);
     i += 20;
-    
+
 }
 
 $("body").keydown(function(event){
     switch (event.key){
-        case "ArrowUp" : drive(1,1,255); break;
-        case "ArrowDown" : drive(1,0,255); break;
-        case "ArrowRight" : drive(2,0,255); break;
+        case "ArrowUp" : drive("both",1,255); break;
+        case "ArrowDown" : drive("both",0,255); break;
+        case "ArrowRight" : drive(1,1,255); break;
         case "ArrowLeft" : drive(2,1,255); break;
+        case " " :  stop(); break;
     }
 });
 
 $("body").keyup(function(event){
     switch (event.key){
-        case "ArrowUp" : drive(1,1,0); break;
-        case "ArrowDown" : drive(1,0,0); break;
-        case "ArrowRight" : drive(2,1,0); break;
-        case "ArrowLeft" : drive(2,0,0); break;
+        case "ArrowUp" : drive("both",1,0); break;
+        case "ArrowDown" : drive("both",0,0); break;
+        case "ArrowRight" : drive(1,1,0); break;
+        case "ArrowLeft" : drive(2,1,0); break;
     }
 });
 
-$("#forward").on("touchstart",function(){ drive(1,1,255)});
-$("#backward").on("touchstart",function(){ drive(1,0,255)});
+$("#forward").on("touchstart",function(){ drive("both",1,255)});
+$("#backward").on("touchstart",function(){ drive("both",0,255)});
 $("#left").on("touchstart",function(){ drive(2,1,255)});
-$("#right").on("touchstart",function(){ drive(2,0,255)});
+$("#right").on("touchstart",function(){ drive(1,1,255)});
 
-$("#forward").on("touchend",function(){ drive(1,1,0)});
-$("#backward").on("touchend",function(){ drive(1,0,0)});
+$("#forward").on("touchend",function(){ drive("both",1,0)});
+$("#backward").on("touchend",function(){ drive("both",0,0)});
 $("#left").on("touchend",function(){ drive(2,1,0)});
-$("#right").on("touchend",function(){ drive(2,0,0)});
+$("#right").on("touchend",function(){ drive(1,1,0)});
 
 function stop(){
     socket.emit("message", {
@@ -56,6 +57,3 @@ function toggleLight(){
          state : lightState
      });
 }
-
-
-
