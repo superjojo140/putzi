@@ -1,5 +1,11 @@
 var Gpio = require('pigpio').Gpio;
 const spawn = require('child_process');
+
+
+//Own classes
+const einkClass = require("./e-ink/eink.js");
+const eink = new einkClass("./e-ink/menu.json");
+
 /*
 
    _____                _              _

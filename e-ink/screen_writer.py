@@ -60,7 +60,8 @@ def main():
     epd.delay_ms(2000)
     """
     # for partial update
-    epd.init(epd.lut_partial_update)
+    #epd.init(epd.lut_partial_update)
+    epd.init(epd.lut_full_update)
     #image = Image.open('monocolor.bmp')
 ##
  # there are 2 memory areas embedded in the e-paper display

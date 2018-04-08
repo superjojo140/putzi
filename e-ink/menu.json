@@ -1,0 +1,24 @@
+{
+  "headline": "Mainmenu",
+  "items": [{
+    "text": "Only Text",
+    "type": "text"
+  }, {
+    "text": "Submenu",
+    "type": "submenu",
+    "children": {
+      "headline": "submenu1",
+      "items": [{
+        "text": "Only Text1",
+        "type": "text"
+      }, {
+        "text": "Only Text2",
+        "type": "text"
+      }]
+    }
+  }, {
+    "text": "Alert",
+    "type": "action",
+    "action": "function(){this.alert('Hallo')}"
+  }]
+}
