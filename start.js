@@ -88,14 +88,14 @@ motor2.directionState = 0;
 
 
 */
-motor1.turn = function (direction, speed) {
+motor1.turn = function(direction, speed) {
     motor1.direction0GPIO.digitalWrite(direction);
     motor1.direction1GPIO.digitalWrite(!direction);
     motor1.directionState = direction;
     motor1.pwmGPIO.pwmWrite(speed);
     motor1.pwmState = speed;
 };
-motor2.turn = function (direction, speed) {
+motor2.turn = function(direction, speed) {
     motor2.direction0GPIO.digitalWrite(direction);
     motor2.direction1GPIO.digitalWrite(!direction);
     motor2.directionState = direction;
@@ -178,8 +178,8 @@ function motorTurn(motor, direction, speed) {
     //
     //Befehl an Motor
     //
-  //  adjustSpeed(motor, Number(direction), Number(speed));
-     motor.turn(Number(direction), Number(speed));
+    //  adjustSpeed(motor, Number(direction), Number(speed));
+    motor.turn(Number(direction), Number(speed));
 }
 
 function adjustSpeed(motor, direction, speed) {
@@ -190,13 +190,13 @@ function adjustSpeed(motor, direction, speed) {
         if (motor1.pwmState < speed) {
             console.log("schneller werden");
             motor1.turn(direction, Math.min(speed, motor1.pwmState + accelerationStep));
-            adjustSpeedTimeout = setTimeout(function () {
+            adjustSpeedTimeout = setTimeout(function() {
                 adjustSpeed(motor, direction, speed);
             }, accelerationIntervall);
         } else if (motor1.pwmState > speed) {
             console.log("langsamer werden");
             motor1.turn(direction, Math.max(speed, motor1.pwmState - accelerationStep));
-            adjustSpeedTimeout = setTimeout(function () {
+            adjustSpeedTimeout = setTimeout(function() {
                 adjustSpeed(motor, direction, speed);
             }, accelerationIntervall);
         }
@@ -239,11 +239,12 @@ function lightSwitch(state) {
 
 */
 var ipAdresse = getIp();
-var screenContent = ["e-ink/screen_writer.py","   Putzi  ",ipAdresse,"Port:  3000","Akku: 10.5V","Clients:  1","Menu      -",0,1,0,0,0,0];
+var screenContent = ["e-ink/screen_writer.py", "   Putzi  ", ipAdresse, "Port:  3000", "Akku: 10.5V", "Clients:  1", "Menu      -", 0, 1, 0, 0, 0, 0];
 
 function showScreenInfo() {
     //auf Bildschirm schreiben
     const ls = spawn.spawn('python', screenContent);
+    //eink.alert("Hallo1");
 }
 
 function setScreenInfo(line, content) {
@@ -279,19 +280,19 @@ app.use(express.static('public')); //Verzeichniss zur Verfügung stellen
 var connections = [];
 server.listen(3000);
 console.log("Server running on Port 3000");
-setScreenInfo(2, getIp());
-setScreenInfo(3, "Port 3000");
+
 showScreenInfo();
-io.sockets.on("connection", function (socket) {
+
+io.sockets.on("connection", function(socket) {
     connections.push(socket);
     console.log("New Client connected");
     //Disconnect
-    socket.on("disconnect", function (data) {
+    socket.on("disconnect", function(data) {
         stoppAll();
         connections.splice(connections.indexOf(socket), 1);
         console.log("Client disconnected");
     });
-    socket.on("message", function (data) {
+    socket.on("message", function(data) {
         if (data.type == "motor") {
             var myMotor;
             if (data.motor == 1) {
@@ -300,11 +301,10 @@ io.sockets.on("connection", function (socket) {
             } else if (data.motor == 2) {
                 myMotor = motor2;
                 motorTurn(myMotor, data.direction, data.speed);
-            }
-            else if (data.motor == "both"){
-              console.log("both");
-              motorTurn(motor1, data.direction, data.speed);
-              motorTurn(motor2, data.direction, data.speed);
+            } else if (data.motor == "both") {
+                console.log("both");
+                motorTurn(motor1, data.direction, data.speed);
+                motorTurn(motor2, data.direction, data.speed);
             }
 
         } else
