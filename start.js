@@ -41,30 +41,30 @@ var adjustSpeedTimeout;
 
 */
 motor1.pwmGPIO = new Gpio(19, {
-    mode: Gpio.OUTPUT
+  mode: Gpio.OUTPUT
 });
 motor1.direction0GPIO = new Gpio(16, {
-    mode: Gpio.OUTPUT
+  mode: Gpio.OUTPUT
 });
 motor1.direction1GPIO = new Gpio(13, {
-    mode: Gpio.OUTPUT
+  mode: Gpio.OUTPUT
 });
 
 //MOTOR 2
 
 motor2.pwmGPIO = new Gpio(26, {
-    mode: Gpio.OUTPUT
+  mode: Gpio.OUTPUT
 });
 motor2.direction0GPIO = new Gpio(21, {
-    mode: Gpio.OUTPUT
+  mode: Gpio.OUTPUT
 });
 motor2.direction1GPIO = new Gpio(20, {
-    mode: Gpio.OUTPUT
+  mode: Gpio.OUTPUT
 });
 
 //LIGHT
 lightPort = new Gpio(6, {
-    mode: Gpio.OUTPUT
+  mode: Gpio.OUTPUT
 });
 /*
 
@@ -95,18 +95,18 @@ motor2.directionState = 0;
 
 */
 motor1.turn = function(direction, speed) {
-    motor1.direction0GPIO.digitalWrite(direction);
-    motor1.direction1GPIO.digitalWrite(!direction);
-    motor1.directionState = direction;
-    motor1.pwmGPIO.pwmWrite(speed);
-    motor1.pwmState = speed;
+  motor1.direction0GPIO.digitalWrite(direction);
+  motor1.direction1GPIO.digitalWrite(!direction);
+  motor1.directionState = direction;
+  motor1.pwmGPIO.pwmWrite(speed);
+  motor1.pwmState = speed;
 };
 motor2.turn = function(direction, speed) {
-    motor2.direction0GPIO.digitalWrite(direction);
-    motor2.direction1GPIO.digitalWrite(!direction);
-    motor2.directionState = direction;
-    motor2.pwmGPIO.pwmWrite(speed);
-    motor2.pwmState = speed;
+  motor2.direction0GPIO.digitalWrite(direction);
+  motor2.direction1GPIO.digitalWrite(!direction);
+  motor2.directionState = direction;
+  motor2.pwmGPIO.pwmWrite(speed);
+  motor2.pwmState = speed;
 };
 /*
 
@@ -161,61 +161,61 @@ buttonLeft.on('interrupt', function (level) {
 
 */
 function motorTurn(motor, direction, speed) {
-    //check Speed
-    if (speed < 0 || speed > 255) {
-        console.log("Falsche Speed Angabe (Mind. 100 | Max. 255): " + speed);
-        return;
-    }
-    //Prüfe ob Lenkung blockiert
-    /*if (buttonRightState == 1 && direction == BACKWARDS && motor == motor2 && speed > 0) {
-        console.log("Lenkung blockiert nach Rechts - Lenkung gestoppt");
-        return;
-    }
-    if (buttonLeftState == 1 && direction == FORWARD && motor == motor2 && speed > 0) {
-        console.log("Lenkung blockiert nach Links - Lenkung gestoppt");
-        return;
-    }*/
-    //Prüfe, ob motor gestopp oder gestartet wird
-    if (speed > 0) {
-        console.log("Turning Motor");
-    } else {
-        console.log("Stopping Motor");
-    }
-    //
-    //Befehl an Motor
-    //
-    //  adjustSpeed(motor, Number(direction), Number(speed));
-    motor.turn(Number(direction), Number(speed));
+  //check Speed
+  if (speed < 0 || speed > 255) {
+    console.log("Falsche Speed Angabe (Mind. 100 | Max. 255): " + speed);
+    return;
+  }
+  //Prüfe ob Lenkung blockiert
+  /*if (buttonRightState == 1 && direction == BACKWARDS && motor == motor2 && speed > 0) {
+      console.log("Lenkung blockiert nach Rechts - Lenkung gestoppt");
+      return;
+  }
+  if (buttonLeftState == 1 && direction == FORWARD && motor == motor2 && speed > 0) {
+      console.log("Lenkung blockiert nach Links - Lenkung gestoppt");
+      return;
+  }*/
+  //Prüfe, ob motor gestopp oder gestartet wird
+  if (speed > 0) {
+    console.log("Turning Motor");
+  } else {
+    console.log("Stopping Motor");
+  }
+  //
+  //Befehl an Motor
+  //
+  //  adjustSpeed(motor, Number(direction), Number(speed));
+  motor.turn(Number(direction), Number(speed));
 }
 
 function adjustSpeed(motor, direction, speed) {
-    clearTimeout(adjustSpeedTimeout);
-    if (motor == motor2) {
-        motor2.turn(direction, speed);
-    } else if (motor == motor1) {
-        if (motor1.pwmState < speed) {
-            console.log("schneller werden");
-            motor1.turn(direction, Math.min(speed, motor1.pwmState + accelerationStep));
-            adjustSpeedTimeout = setTimeout(function() {
-                adjustSpeed(motor, direction, speed);
-            }, accelerationIntervall);
-        } else if (motor1.pwmState > speed) {
-            console.log("langsamer werden");
-            motor1.turn(direction, Math.max(speed, motor1.pwmState - accelerationStep));
-            adjustSpeedTimeout = setTimeout(function() {
-                adjustSpeed(motor, direction, speed);
-            }, accelerationIntervall);
-        }
-    } else {
-        console.log("Error: adjustSpeed() has no valid motor");
+  clearTimeout(adjustSpeedTimeout);
+  if (motor == motor2) {
+    motor2.turn(direction, speed);
+  } else if (motor == motor1) {
+    if (motor1.pwmState < speed) {
+      console.log("schneller werden");
+      motor1.turn(direction, Math.min(speed, motor1.pwmState + accelerationStep));
+      adjustSpeedTimeout = setTimeout(function() {
+        adjustSpeed(motor, direction, speed);
+      }, accelerationIntervall);
+    } else if (motor1.pwmState > speed) {
+      console.log("langsamer werden");
+      motor1.turn(direction, Math.max(speed, motor1.pwmState - accelerationStep));
+      adjustSpeedTimeout = setTimeout(function() {
+        adjustSpeed(motor, direction, speed);
+      }, accelerationIntervall);
     }
+  } else {
+    console.log("Error: adjustSpeed() has no valid motor");
+  }
 }
 
 function stoppAll() {
-    motor1.turn(0, 0);
-    motor2.turn(0, 0);
-    console.log("EMERGENCY - UIUIUIUIUIUIUIUIUIUIU");
-    clearTimeout(adjustSpeedTimeout);
+  motor1.turn(0, 0);
+  motor2.turn(0, 0);
+  console.log("EMERGENCY - UIUIUIUIUIUIUIUIUIUIU");
+  clearTimeout(adjustSpeedTimeout);
 }
 /*
 
@@ -230,7 +230,7 @@ function stoppAll() {
 
 */
 function lightSwitch(state) {
-    lightPort.digitalWrite(state);
+  lightPort.digitalWrite(state);
 }
 /*
 
@@ -248,23 +248,23 @@ var ipAdresse = getIp();
 var screenContent = ["e-ink/screen_writer.py", "   Putzi  ", ipAdresse, "Port:  3000", "Akku: 10.5V", "Clients:  1", "Menu      -", 0, 1, 0, 0, 0, 0];
 
 function showScreenInfo() {
-    //auf Bildschirm schreiben
-    const ls = spawn.spawn('python', screenContent);
-    //eink.alert("Hallo1");
+  //auf Bildschirm schreiben
+  //const ls = spawn.spawn('python', screenContent);
+  //eink.alert("Hallo1");
 }
 
 function setScreenInfo(line, content) {
-    if (line > 0 && line < 10) {
-        screenContent[line] = content;
+  if (line > 0 && line < 10) {
+    screenContent[line] = content;
 
-    }
+  }
 
 }
 
 function getIp() {
-    var os = require('os');
-    var networkInterfaces = os.networkInterfaces();
-    return networkInterfaces['wlan0'][0]['address'];
+  var os = require('os');
+  var networkInterfaces = os.networkInterfaces();
+  return networkInterfaces['wlan0'][0]['address'];
 }
 /*
 
@@ -290,34 +290,44 @@ console.log("Server running on Port 3000");
 showScreenInfo();
 
 io.sockets.on("connection", function(socket) {
-    connections.push(socket);
-    console.log("New Client connected");
-    //Disconnect
-    socket.on("disconnect", function(data) {
-        stoppAll();
-        connections.splice(connections.indexOf(socket), 1);
-        console.log("Client disconnected");
-    });
-    socket.on("message", function(data) {
-        if (data.type == "motor") {
-            var myMotor;
-            if (data.motor == 1) {
-                myMotor = motor1;
-                motorTurn(myMotor, data.direction, data.speed);
-            } else if (data.motor == 2) {
-                myMotor = motor2;
-                motorTurn(myMotor, data.direction, data.speed);
-            } else if (data.motor == "both") {
-                console.log("both");
-                motorTurn(motor1, data.direction, data.speed);
-                motorTurn(motor2, data.direction, data.speed);
-            }
+  connections.push(socket);
+  console.log("New Client connected");
+  //Disconnect
+  socket.on("disconnect", function(data) {
+    stoppAll();
+    connections.splice(connections.indexOf(socket), 1);
+    console.log("Client disconnected");
+  });
+  socket.on("message", function(data) {
+    if (data.type == "motor") {
+      var myMotor;
+      if (data.motor == 1) {
+        myMotor = motor1;
+        motorTurn(myMotor, data.direction, data.speed);
+      } else if (data.motor == 2) {
+        myMotor = motor2;
+        motorTurn(myMotor, data.direction, data.speed);
+      } else if (data.motor == "both") {
+        console.log("both");
+        motorTurn(motor1, data.direction, data.speed);
+        motorTurn(motor2, data.direction, data.speed);
+      }
 
-        } else
-        if (data.type == "light") {
-            lightSwitch(data.state);
-        } else {
-            stoppAll();
-        }
-    });
+    } else
+    if (data.type == "light") {
+      lightSwitch(data.state);
+    } else if (data.type == "screenControl") {
+      if (data.control == "next"){
+        eink.next();
+      }
+      if (data.control == "back"){
+        eink.back();
+      }
+      if (data.control == "select"){
+        eink.select();
+      }
+    } else {
+      stoppAll();
+    }
+  });
 });

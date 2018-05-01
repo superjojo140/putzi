@@ -57,3 +57,10 @@ function toggleLight(){
          state : lightState
      });
 }
+
+function sendScreenControl(control){
+  socket.emit("message", {
+       type : "screenControl",
+       control : control
+   });
+}

@@ -60,8 +60,8 @@ def main():
     epd.delay_ms(2000)
     """
     # for partial update
-    #epd.init(epd.lut_partial_update)
-    epd.init(epd.lut_full_update)
+    #
+
     #image = Image.open('monocolor.bmp')
 ##
  # there are 2 memory areas embedded in the e-paper display
@@ -75,11 +75,15 @@ def main():
     #epd.display_frame()
     arguments = sys.argv
     fontTypes = [ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 30), ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 20)]
-    texts = arguments[1:7]
+    updateType = arguments[1]
+    if updateType == "full":
+        epd.init(epd.lut_full_update)
+    else:
+        epd.init(epd.lut_partial_update)
+    texts = arguments[2:8]
     #texts = ["  Status  ","-192.168.110.15-","Port:  3000","Akku: 10.5V","Clients:  1","Menu      -"]
     backgrounds = [255,0,0,0,0,255]
-    fills = [0,255,255,255,255,0]
-    fonts = arguments[7:13]
+    fonts = arguments[8:14]
 
     epd.clear_frame_memory(0xFF)
     epd.clear_frame_memory(0xFF)
@@ -88,8 +92,9 @@ def main():
         time_image = Image.new('1', (200, 30), 255)  # 255: clear the frame
         draw = ImageDraw.Draw(time_image)
         image_width, image_height  = time_image.size
-        draw.rectangle((0, 0, image_width, image_height), fill = fills[i])
-        draw.text((1, 0), texts[i], font = fontTypes[int(fonts[i])], fill = backgrounds[i])
+        draw.rectangle((0, 0, image_width, image_height), fill = 255 - backgrounds[i])
+        myFont = fontTypes[int(fonts[i])]
+        draw.text((1, 0), texts[i], font = myFont, fill = backgrounds[i])
         epd.set_frame_memory(time_image, 0, i*30 + i*4)
 
         # display changes

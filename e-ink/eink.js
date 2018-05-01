@@ -9,29 +9,78 @@ class eink {
         this.spawn = require('child_process');
         this.fs = require("fs");
         this.menu = {};
+        this.lastScreenContent = undefined;
+        this.menu.currentItem = undefined;
+        this.menu.currentNode = undefined;
+        this.menu.start = undefined;
         this.parseMenuFile(filepath);
     }
 
     alert(message) {
-        var screenContent = ["Message", "", message, "", "", "-      OK", 0, 0, 0, 0, 0, 0];
+        var screenContent = ["full","Message", "", message, "", "", "-      OK", 0, 0, 0, 0, 0, 0];
         this.writeToScreen(screenContent);
     }
 
+    //Takes array with the 6 Text items and 6 Font Size Ids
     writeToScreen(options) {
-        //scriptnamen hinzufügen
+        //set full or partial update
+        options.unshift(this.fullOrPartial(options));
+        //Add name of screen_writer script
         options.unshift(this.screenWriter);
         console.log("Writing to screen");
         this.spawn.spawn('python', options);
+        this.lastScreenContent = options;
+        //console.log(options);
+    }
+
+    fullOrPartial(options){
+      //TODO Implement fullOrPartial
+      return "full";
+    }
+
+    displayNode(node){
+      var options = [node.headline];
+      for(var i=0; i<4;i++){
+        if (node.items[i] != undefined){
+          if(node.items[i].isActive){
+            options.push(">"+node.items[i].text);
+          }
+          else{
+            options.push(" "+node.items[i].text);
+          }
+
+        }
+        else{
+          options.push("");
+        }
+      }
+      options.push("Next     OK");
+      //font Sizes
+      options.push(0);
+      for(var i=0; i<4;i++){
+        if (node.items[i] != undefined){
+          options.push(node.items[i].font);
+        }
+        else{
+          options.push(0);
+        }
+      }
+      options.push(0);
+      //Set as currentNode
+      this.menu.currentNode = node;
+      //Send to screen
+      this.writeToScreen(options);
     }
 
     next() {
-        this.menu.currentItem = this.menu.currentItem.next;
-        //Markiereung anzeigen
+      console.log("next");
+        this.setCurrentItem(this.menu.currentItem.next);
     }
 
     back() {
-        this.menu.currentItem = this.menu.currentItem.back;
-        //Neues Menu anzeigen
+      if (this.menu.currentItem.back != undefined){
+        this.setCurrentItem(this.menu.currentItem.back);
+      }
     }
 
     select() {
@@ -42,9 +91,21 @@ class eink {
         var text = this.fs.readFileSync(filepath);
         this.menu.json = JSON.parse(text);
         //validate menu file recursiv
-        this.menu.start = this.validateMenuNode(this.menu.json, this.menu.json);
-        this.menu.currentItem = this.menu.start.items[0];
+        this.menu.start = this.validateMenuNode(this.menu.json, undefined);
+        this.menu.currentNode = this.menu.start;
+        this.menu.start.items[0].isActive = true;
+        this.menu.currentItem=this.menu.start.items[0];
+        this.displayNode(this.menu.currentNode);
     }
+
+    setCurrentItem(item){
+      this.menu.currentItem.isActive = false;
+      this.menu.currentItem = item;
+      item.isActive = true;
+      this.displayNode(this.menu.currentNode);
+      console.log("Current Item is now: " + item.text);
+    }
+
 
     validateMenuNode(node, parentNode) {
         if (node.headline == undefined) {
@@ -59,17 +120,20 @@ class eink {
             console.log("[Menu-parser]: Menu node cannot contain more than 4 items. This node has " + node.items.length + " items. Node headline: " + node.headline);
             return false
         }
+        console.log("Anzahl Items: "+ node.items.length);
         for (var i in node.items) {
             var ci = node.items[i];
+            //Initialise all Items as false
+            ci.isActive = false;
             //item.text
             if (ci.text == undefined) {
                 console.log("[Menu-parser]: Menu item has no text. Node: " + node.headline + "Item: " + i);
                 return false
             }
             //Set font size
-            if (ci.text.length <= 11) {
+            if (ci.text.length <= 10) {
                 ci.font = 0;
-            } else if (ci.text.length <= 16) {
+            } else if (ci.text.length <= 15) {
                 ci.font = 1;
             } else {
                 console.log("[Menu-parser]: Menu item has too long text: " + ci.text + " Node: " + node.headline + "Item: " + i);
@@ -104,6 +168,7 @@ class eink {
             }
             //Set next and back for every item
             ci.back = parentNode;
+            console.log("Current iTem is: " + ci.text + " Next item is: " + node.items[i+1].text);
             if (node.items[i + 1] == undefined) {
                 ci.next = node.items[0];
             } else {
